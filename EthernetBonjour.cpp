@@ -24,8 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <Arduino.h>
-#include <Ethernet.h>
-#include <EthernetUdp.h>
+#include <Udp.h>
 
 extern "C" {
    #include <utility/EthernetUtil.h>
@@ -135,13 +134,15 @@ EthernetBonjour::~EthernetBonjour()
 // return values:
 // 1 on success
 // 0 otherwise
-int EthernetBonjour::begin(const char* bonjourName)
+int EthernetBonjour::begin(const IPAddress& ip, const char* bonjourName)
 {
 	// if we were called very soon after the board was booted, we need to give the
 	// EthernetShield (WIZnet) some time to come up. Hence, we delay until millis() is at
 	// least 3000. This is necessary, so that if we need to add a service record directly
 	// after begin, the announce packet does not get lost in the bowels of the WIZnet chip.
 	while (millis() < 3000) delay(100);
+
+	_ipAddress = ip;
 
 	int statusCode = 0;
 	statusCode = this->setBonjourName(bonjourName);
@@ -154,9 +155,9 @@ int EthernetBonjour::begin(const char* bonjourName)
 // return values:
 // 1 on success
 // 0 otherwise
-int EthernetBonjour::begin()
+int EthernetBonjour::begin(const IPAddress& ip)
 {
-   return this->begin(MDNS_DEFAULT_NAME);
+   return this->begin(ip, MDNS_DEFAULT_NAME);
 }
 
 // return values:
@@ -1314,12 +1315,10 @@ void EthernetBonjour::_writeMyIPAnswerRecord(uint16_t* pPtr, uint8_t* buf, int b
    *((uint16_t*)&buf[4]) = ethutil_htons(4);      // data length
 
    uint8_t myIp[4];
-   IPAddress myIpBuf;
-   myIpBuf = Ethernet.localIP();
-   myIp[0] = myIpBuf [0];
-   myIp[1] = myIpBuf [1];
-   myIp[2] = myIpBuf [2];
-   myIp[3] = myIpBuf [3];
+   myIp[0] = _ipAddress [0];
+   myIp[1] = _ipAddress [1];
+   myIp[2] = _ipAddress [2];
+   myIp[3] = _ipAddress [3];
 
    memcpy(&buf[6], &myIp, 4);              // our IP address
 

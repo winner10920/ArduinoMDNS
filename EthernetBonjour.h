@@ -78,6 +78,7 @@ class EthernetBonjour
 {
 private:
    UDP*                  _udp;
+   IPAddress             _ipAddress;
    MDNSDataInternal_t    _mdnsData;
    MDNSState_t           _state;
    uint8_t*             _bonjourName;
@@ -121,8 +122,8 @@ public:
    EthernetBonjour(UDP& udp);
    ~EthernetBonjour();
    
-   int begin();
-   int begin(const char* bonjourName);
+   int begin(const IPAddress& ip);
+   int begin(const IPAddress& ip, const char* bonjourName);
    void run();
    
    int setBonjourName(const char* bonjourName);

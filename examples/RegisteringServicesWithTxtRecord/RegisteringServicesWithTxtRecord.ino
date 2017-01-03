@@ -48,7 +48,7 @@ void setup()
   // Arduino via the host name "arduino.local", provided that your operating
   // system is Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  ethernetBonjour.begin("arduino");
+  ethernetBonjour.begin(Ethernet.localIP(), "arduino");
 
   // Now let's register the service we're offering (a web service) via Bonjour!
   // To do so, we call the addServiceRecord() method. The first argument is the
