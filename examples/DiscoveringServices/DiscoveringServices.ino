@@ -22,7 +22,11 @@
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <EthernetUdp.h>
 #include <EthernetBonjour.h>
+
+EthernetUDP udp;
+EthernetBonjour ethernetBonjour(udp);
 
 // you can find this written on the board of some Arduino Ethernets or shields
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
@@ -47,12 +51,12 @@ void setup()
   // Arduino via the host name "arduino.local", provided that your operating
   // system is Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  EthernetBonjour.begin("arduino");
+  ethernetBonjour.begin("arduino");
 
   // We specify the function that the Bonjour library will call when it
   // discovers a service instance. In this case, we will call the function
   // named "serviceFound".
-  EthernetBonjour.setServiceFoundCallback(serviceFound);
+  ethernetBonjour.setServiceFoundCallback(serviceFound);
 
   Serial.begin(9600);
   Serial.println("Enter a Bonjour service name via the Arduino Serial Monitor "
@@ -78,7 +82,7 @@ void loop()
   // You can use the "isDiscoveringService()" function to find out whether the
   // Bonjour library is currently discovering service instances.
   // If so, we skip this input, since we want our previous request to continue.
-  if (!EthernetBonjour.isDiscoveringService()) {
+  if (!ethernetBonjour.isDiscoveringService()) {
     if (length > 0) {    
       byte ipAddr[4];
 
@@ -95,7 +99,7 @@ void loop()
       // seconds, so if you search for longer than that, you will receive
       // duplicate instances.
 
-      EthernetBonjour.startDiscoveringService(serviceName,
+      ethernetBonjour.startDiscoveringService(serviceName,
                                               MDNSServiceTCP,
                                               5000);
     }  
@@ -104,7 +108,7 @@ void loop()
   // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK!
   // Preferably, call it once per loop().
-  EthernetBonjour.run();
+  ethernetBonjour.run();
 }
 
 // This function is called when a name is resolved via MDNS/Bonjour. We set

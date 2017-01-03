@@ -23,7 +23,11 @@
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <EthernetUdp.h>
 #include <EthernetBonjour.h>
+
+EthernetUDP udp;
+EthernetBonjour ethernetBonjour(udp);
 
 // you can find this written on the board of some Arduino Ethernets or shields
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
@@ -46,12 +50,12 @@ void setup()
   // Arduino via the host name "arduino.local", provided that your operating
   // system is Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  EthernetBonjour.begin("arduino");
+  ethernetBonjour.begin("arduino");
 
   // We specify the function that the Bonjour library will call when it
   // resolves a host name. In this case, we will call the function named
   // "nameFound".
-  EthernetBonjour.setNameResolvedCallback(nameFound);
+  ethernetBonjour.setNameResolvedCallback(nameFound);
 
   Serial.begin(9600);
   Serial.println("Enter a Bonjour host name via the Arduino Serial Monitor to "
@@ -75,7 +79,7 @@ void loop()
   // You can use the "isResolvingName()" function to find out whether the
   // Bonjour library is currently resolving a host name.
   // If so, we skip this input, since we want our previous request to continue.
-  if (!EthernetBonjour.isResolvingName()) {
+  if (!ethernetBonjour.isResolvingName()) {
     if (length > 0) {    
       byte ipAddr[4];
 
@@ -89,13 +93,13 @@ void loop()
       // either receives an answer or your timeout is reached - In either case,
       // the callback function you specified in setup() will be called.
 
-      EthernetBonjour.resolveName(hostName, 5000);
+      ethernetBonjour.resolveName(hostName, 5000);
     }  
   }
 
   // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK! Preferably, call it once per loop().
-  EthernetBonjour.run();
+  ethernetBonjour.run();
 }
 
 // This function is called when a name is resolved via MDNS/Bonjour. We set

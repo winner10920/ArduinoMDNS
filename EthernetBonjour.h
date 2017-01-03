@@ -25,6 +25,8 @@ extern "C" {
    #include <inttypes.h>
 }
 
+#include <Arduino.h>
+
 typedef uint8_t byte;
 
 typedef enum _MDNSState_t {
@@ -71,11 +73,11 @@ typedef void (*BonjourServiceFoundCallback)(const char*, MDNSServiceProtocol_t, 
 
 #define  NumMDNSServiceRecords   (8)
 
-//class EthernetBonjourClass
-class EthernetBonjourClass :
-		public EthernetUDP
+//class EthernetBonjour
+class EthernetBonjour
 {
 private:
+   UDP*                  _udp;
    MDNSDataInternal_t    _mdnsData;
    MDNSState_t           _state;
    uint8_t*             _bonjourName;
@@ -116,8 +118,8 @@ private:
    
    void _finishedResolvingName(char* name, const byte ipAddr[4]);
 public:
-   EthernetBonjourClass();
-   ~EthernetBonjourClass();
+   EthernetBonjour(UDP& udp);
+   ~EthernetBonjour();
    
    int begin();
    int begin(const char* bonjourName);
@@ -145,7 +147,5 @@ public:
    void stopDiscoveringService();
    int isDiscoveringService();
 };
-
-extern EthernetBonjourClass EthernetBonjour;
 
 #endif // __ETHERNET_BONJOUR_H__

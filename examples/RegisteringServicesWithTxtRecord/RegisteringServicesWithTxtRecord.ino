@@ -22,7 +22,11 @@
 
 #include <SPI.h>
 #include <Ethernet.h>
+#include <EthernetUdp.h>
 #include <EthernetBonjour.h>
+
+EthernetUDP udp;
+EthernetBonjour ethernetBonjour(udp);
 
 // you can find this written on the board of some Arduino Ethernets or shields
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
@@ -44,7 +48,7 @@ void setup()
   // Arduino via the host name "arduino.local", provided that your operating
   // system is Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  EthernetBonjour.begin("arduino");
+  ethernetBonjour.begin("arduino");
 
   // Now let's register the service we're offering (a web service) via Bonjour!
   // To do so, we call the addServiceRecord() method. The first argument is the
@@ -61,7 +65,7 @@ void setup()
   // browser. As an example, if you are using Apple's Safari, you will now see
   // the service under Bookmarks -> Bonjour (Provided that you have enabled
   // Bonjour in the "Bookmarks" preferences in Safari).
-  EthernetBonjour.addServiceRecord("Arduino Bonjour Webserver Example._http",
+  ethernetBonjour.addServiceRecord("Arduino Bonjour Webserver Example._http",
                                    80,
                                    MDNSServiceTCP);
 
@@ -73,7 +77,7 @@ void setup()
   // primer.
   // What this does is that your browser will now show a second Bonjour entry,
   // which will take you to another page on the Arduino web server.
-  EthernetBonjour.addServiceRecord("Arduino Bonjour Webserver Example, Page 2"
+  ethernetBonjour.addServiceRecord("Arduino Bonjour Webserver Example, Page 2"
                                      "._http",
                                    80,
                                    MDNSServiceTCP,
@@ -84,7 +88,7 @@ void loop()
 { 
   // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK! Preferably, call it once per loop().
-  EthernetBonjour.run();
+  ethernetBonjour.run();
 
   // The code below is just taken from the "WebServer" example in the Ethernet
   // library. The only difference here is that this web server gets announced
