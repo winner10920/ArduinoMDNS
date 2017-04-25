@@ -61,8 +61,8 @@ extern uint32_t ethutil_ntohl(unsigned long netlong)
 #endif
 }
 
-#pragma mark -
-#pragma mark Private
+// #pragma mark -
+// #pragma mark Private
 
 uint16_t ethutil_swaps(uint16_t i)
 {

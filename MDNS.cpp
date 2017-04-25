@@ -269,7 +269,7 @@ int MDNS::isDiscoveringService()
 // return value:
 // A DNSError_t (DNSSuccess on success, something else otherwise)
 // in "int" mode: positive on success, negative on error
-MDNSError_t MDNS::_sendMDNSMessage(uint32_t peerAddress, uint32_t xid, int type,
+MDNSError_t MDNS::_sendMDNSMessage(uint32_t /*peerAddress*/, uint32_t xid, int type,
                                                    int serviceRecord)
 {
    MDNSError_t statusCode = MDNSSuccess;
@@ -487,9 +487,9 @@ MDNSError_t MDNS::_sendMDNSMessage(uint32_t peerAddress, uint32_t xid, int type,
 
    this->_udp->endPacket();
 
+#if defined(_USE_MALLOC_)
 errorReturn:
 
-#if defined(_USE_MALLOC_)
    if (NULL != dnsHeader)
       my_free(dnsHeader);
 #endif
@@ -511,7 +511,7 @@ MDNSError_t MDNS::_processMDNSQuery()
 #endif
    int i, j;
    uint8_t* buf;
-   uint32_t xid;
+   uint32_t xid = 0;
    uint16_t udp_len, qCnt, aCnt, aaCnt, addCnt;
    uint8_t recordsAskedFor[NumMDNSServiceRecords+2];
    uint8_t recordsFound[2];
@@ -623,7 +623,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                int tr = rLen, ir;
                
                while (tr > 0) {
-                  ir = (tr > sizeof(DNSHeader_t)) ? sizeof(DNSHeader_t) : tr;
+                  ir = (tr > (int)sizeof(DNSHeader_t)) ? sizeof(DNSHeader_t) : tr;
 
                   memcpy((uint8_t*)buf, (uint16_t*)(ptr+offset) ,ir);
                   offset += ir;
@@ -765,7 +765,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                         firstNamePtrByte = offset-1; // -1, since we already read length (1 byte)
                
                      while (tr > 0) {
-                        ir = (tr > sizeof(DNSHeader_t)) ? sizeof(DNSHeader_t) : tr;
+                        ir = (tr > (int)sizeof(DNSHeader_t)) ? sizeof(DNSHeader_t) : tr;
                         memcpy((uint8_t*)buf, (uint16_t*)(ptr+offset) ,ir);
                         offset += ir;
                         tr -= ir;
@@ -858,7 +858,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                                 	 memcpy((uint8_t*)ptrName, (uint16_t*)(ptr+offset+1) ,l-1);
                                  
                                     if (buf[0] < l-1)
-                                       ptrName[buf[0]]; // this catches uncompressed names
+                                       ptrName[buf[0]] = '\0'; // this catches uncompressed names
                                     else
                                        ptrName[l-1] = '\0';
                                     

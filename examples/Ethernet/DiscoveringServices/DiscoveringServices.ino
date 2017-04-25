@@ -83,8 +83,6 @@ void loop()
   // If so, we skip this input, since we want our previous request to continue.
   if (!mdns.isDiscoveringService()) {
     if (length > 0) {    
-      byte ipAddr[4];
-
       Serial.print("Discovering services of type '");
       Serial.print(serviceName);
       Serial.println("' via Multi-Cast DNS (Bonjour)...");
@@ -118,7 +116,7 @@ void loop()
 // will be set.
 // If your specified discovery timeout is reached, the function will be called
 // with name (and all successive arguments) being set to NULL.
-void serviceFound(const char* type, MDNSServiceProtocol proto,
+void serviceFound(const char* type, MDNSServiceProtocol /*proto*/,
                   const char* name, IPAddress ip,
                   unsigned short port,
                   const char* txtContent)
@@ -143,7 +141,8 @@ void serviceFound(const char* type, MDNSServiceProtocol proto,
       Serial.print("\ttxt record: ");
       
       char buf[256];
-      char len = *txtContent++, i=0;;
+      char len = *txtContent++;
+      int i=0;
       while (len) {
         i = 0;
         while (len--)

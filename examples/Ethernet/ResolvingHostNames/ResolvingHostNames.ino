@@ -22,58 +22,41 @@
 
 
 #include <SPI.h>
-#include <WiFi101.h>
-#include <WiFiUdp.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
 #include <ArduinoMDNS.h>
 
-char ssid[] = "yourNetwork";     //  your network SSID (name)
-char pass[] = "secretPassword";  // your network password
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
-
-WiFiUDP udp;
+EthernetUDP udp;
 MDNS mdns(udp);
+
+// you can find this written on the board of some Arduino Ethernets or shields
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
+
+// NOTE: Alternatively, you can assign a fixed IP to configure your
+//       Ethernet shield.
+//       byte ip[] = { 192, 168, 0, 154 };
 
 void nameFound(const char* name, IPAddress ip);
 
 void setup()
 {
-  //Initialize serial and wait for port to open:
-  Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  
-  // check for the presence of the shield:
-  if (WiFi.status() == WL_NO_SHIELD) {
-    Serial.println("WiFi shield not present");
-    // don't continue:
-    while (true);
-  }
-
-  // attempt to connect to Wifi network:
-  while ( status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to WPA SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network:
-    status = WiFi.begin(ssid, pass);
-
-    // wait 10 seconds for connection:
-    delay(10000);
-  }
-
-  Serial.print("You're connected to the network");
+// NOTE: Alternatively, you can assign a fixed IP to configure your
+//       Ethernet shield.
+//       Ethernet.begin(mac, ip);   
+  Ethernet.begin(mac); 
   
   // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
   // system is mDNS/Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  mdns.begin(WiFi.localIP(), "arduino");
+  mdns.begin(Ethernet.localIP(), "arduino");
 
   // We specify the function that the mDNS library will call when it
   // resolves a host name. In this case, we will call the function named
   // "nameFound".
   mdns.setNameResolvedCallback(nameFound);
 
+  Serial.begin(9600);
   Serial.println("Enter a mDNS host name via the Arduino Serial Monitor to "
                  "have it resolved.");
   Serial.println("Do not postfix the name with \".local\"");
@@ -96,9 +79,7 @@ void loop()
   // mDNS library is currently resolving a host name.
   // If so, we skip this input, since we want our previous request to continue.
   if (!mdns.isResolvingName()) {
-    if (length > 0) {    
-      byte ipAddr[4];
-
+    if (length > 0) {
       Serial.print("Resolving '");
       Serial.print(hostName);
       Serial.println("' via Multicast DNS (Bonjour)...");
@@ -113,7 +94,7 @@ void loop()
     }  
   }
 
-  // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
+  // This actually runs the mDNS module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK! Preferably, call it once per loop().
   mdns.run();
 }
