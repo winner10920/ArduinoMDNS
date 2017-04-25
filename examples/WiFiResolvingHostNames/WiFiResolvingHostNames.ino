@@ -24,14 +24,14 @@
 #include <SPI.h>
 #include <WiFi101.h>
 #include <WiFiUdp.h>
-#include <EthernetBonjour.h>
+#include <ArduinoMDNS.h>
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 WiFiUDP udp;
-EthernetBonjour ethernetBonjour(udp);
+MDNS mdns(udp);
 
 const char* ip_to_str(const uint8_t*);
 void nameFound(const char* name, const byte ipAddr[4]);
@@ -64,18 +64,18 @@ void setup()
 
   Serial.print("You're connected to the network");
   
-  // Initialize the Bonjour/MDNS library. You can now reach or ping this
+  // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  ethernetBonjour.begin(WiFi.localIP(), "arduino");
+  mdns.begin(WiFi.localIP(), "arduino");
 
-  // We specify the function that the Bonjour library will call when it
+  // We specify the function that the mDNS library will call when it
   // resolves a host name. In this case, we will call the function named
   // "nameFound".
-  ethernetBonjour.setNameResolvedCallback(nameFound);
+  mdns.setNameResolvedCallback(nameFound);
 
-  Serial.println("Enter a Bonjour host name via the Arduino Serial Monitor to "
+  Serial.println("Enter a mDNS host name via the Arduino Serial Monitor to "
                  "have it resolved.");
   Serial.println("Do not postfix the name with \".local\"");
 }
@@ -94,9 +94,9 @@ void loop()
   hostName[length] = '\0';
   
   // You can use the "isResolvingName()" function to find out whether the
-  // Bonjour library is currently resolving a host name.
+  // mDNS library is currently resolving a host name.
   // If so, we skip this input, since we want our previous request to continue.
-  if (!ethernetBonjour.isResolvingName()) {
+  if (!mdns.isResolvingName()) {
     if (length > 0) {    
       byte ipAddr[4];
 
@@ -104,22 +104,22 @@ void loop()
       Serial.print(hostName);
       Serial.println("' via Multicast DNS (Bonjour)...");
 
-      // Now we tell the Bonjour library to resolve the host name. We give it a
+      // Now we tell the mDNS library to resolve the host name. We give it a
       // timeout of 5 seconds (e.g. 5000 milliseconds) to find an answer. The
       // library will automatically resend the query every second until it
       // either receives an answer or your timeout is reached - In either case,
       // the callback function you specified in setup() will be called.
 
-      ethernetBonjour.resolveName(hostName, 5000);
+      mdns.resolveName(hostName, 5000);
     }  
   }
 
   // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK! Preferably, call it once per loop().
-  ethernetBonjour.run();
+  mdns.run();
 }
 
-// This function is called when a name is resolved via MDNS/Bonjour. We set
+// This function is called when a name is resolved via mDNS/Bonjour. We set
 // this up in the setup() function above. The name you give to this callback
 // function does not matter at all, but it must take exactly these arguments
 // (a const char*, which is the hostName you wanted resolved, and a const

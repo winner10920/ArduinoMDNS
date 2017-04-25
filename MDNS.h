@@ -18,8 +18,8 @@
 //  <http://www.gnu.org/licenses/>.
 //
 
-#if !defined(__ETHERNET_BONJOUR_H__)
-#define __ETHERNET_BONJOUR_H__ 1
+#if !defined(__MDNS_H__)
+#define __MDNS_H__ 1
 
 extern "C" {
    #include <inttypes.h>
@@ -67,21 +67,21 @@ typedef struct _MDNSServiceRecord_t {
    uint8_t*                textContent;
 } MDNSServiceRecord_t;
 
-typedef void (*BonjourNameFoundCallback)(const char*, const byte[4]);
-typedef void (*BonjourServiceFoundCallback)(const char*, MDNSServiceProtocol_t, const char*,
-                                            const byte[4], unsigned short, const char*);
+typedef void (*MDNSNameFoundCallback)(const char*, const byte[4]);
+typedef void (*MDNSServiceFoundCallback)(const char*, MDNSServiceProtocol_t, const char*,
+                                         const byte[4], unsigned short, const char*);
 
 #define  NumMDNSServiceRecords   (8)
 
-//class EthernetBonjour
-class EthernetBonjour
+//class MDNS
+class MDNS
 {
 private:
    UDP*                  _udp;
    IPAddress             _ipAddress;
    MDNSDataInternal_t    _mdnsData;
    MDNSState_t           _state;
-   uint8_t*             _bonjourName;
+   uint8_t*             _name;
    MDNSServiceRecord_t* _serviceRecords[NumMDNSServiceRecords];
    unsigned long        _lastAnnounceMillis;
    
@@ -91,8 +91,8 @@ private:
    
    MDNSServiceProtocol_t _resolveServiceProto;
    
-   BonjourNameFoundCallback      _nameFoundCallback;
-   BonjourServiceFoundCallback   _serviceFoundCallback;
+   MDNSNameFoundCallback      _nameFoundCallback;
+   MDNSServiceFoundCallback   _serviceFoundCallback;
 
    MDNSError_t _processMDNSQuery();
    MDNSError_t _sendMDNSMessage(uint32_t peerAddress, uint32_t xid, int type, int serviceRecord);
@@ -119,14 +119,14 @@ private:
    
    void _finishedResolvingName(char* name, const byte ipAddr[4]);
 public:
-   EthernetBonjour(UDP& udp);
-   ~EthernetBonjour();
+   MDNS(UDP& udp);
+   ~MDNS();
    
    int begin(const IPAddress& ip);
-   int begin(const IPAddress& ip, const char* bonjourName);
+   int begin(const IPAddress& ip, const char* name);
    void run();
    
-   int setBonjourName(const char* bonjourName);
+   int setName(const char* name);
    
    int addServiceRecord(const char* name, uint16_t port, MDNSServiceProtocol_t proto);
    int addServiceRecord(const char* name, uint16_t port, MDNSServiceProtocol_t proto,
@@ -137,16 +137,16 @@ public:
       
    void removeAllServiceRecords();
    
-   void setNameResolvedCallback(BonjourNameFoundCallback newCallback);
+   void setNameResolvedCallback(MDNSNameFoundCallback newCallback);
    int resolveName(const char* name, unsigned long timeout);
    void cancelResolveName();
    int isResolvingName();
    
-   void setServiceFoundCallback(BonjourServiceFoundCallback newCallback);
+   void setServiceFoundCallback(MDNSServiceFoundCallback newCallback);
    int startDiscoveringService(const char* serviceName, MDNSServiceProtocol_t proto,
                                unsigned long timeout);
    void stopDiscoveringService();
    int isDiscoveringService();
 };
 
-#endif // __ETHERNET_BONJOUR_H__
+#endif // __MDNS_H__

@@ -23,10 +23,10 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
-#include <EthernetBonjour.h>
+#include <ArduinoMDNS.h>
 
 EthernetUDP udp;
-EthernetBonjour ethernetBonjour(udp);
+MDNS mdns(udp);
 
 // you can find this written on the board of some Arduino Ethernets or shields
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; 
@@ -46,13 +46,13 @@ void setup()
   
   server.begin();
 
-  // Initialize the Bonjour/MDNS library. You can now reach or ping this
+  // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  ethernetBonjour.begin(Ethernet.localIP(), "arduino");
+  mdns.begin(Ethernet.localIP(), "arduino");
 
-  // Now let's register the service we're offering (a web service) via Bonjour!
+  // Now let's register the service we're offering (a web service) via mDNS!
   // To do so, we call the addServiceRecord() method. The first argument is the
   // name of our service instance and its type, separated by a dot. In this
   // case, the service type is _http. There are many other service types, use
@@ -67,20 +67,20 @@ void setup()
   // browser. As an example, if you are using Apple's Safari, you will now see
   // the service under Bookmarks -> Bonjour (Provided that you have enabled
   // Bonjour in the "Bookmarks" preferences in Safari).
-  ethernetBonjour.addServiceRecord("Arduino Bonjour Webserver Example._http",
-                                   80,
-                                   MDNSServiceTCP);
+  mdns.addServiceRecord("Arduino mDNS Webserver Example._http",
+                        80,
+                        MDNSServiceTCP);
 }
 
 void loop()
 { 
-  // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
+  // This actually runs the mDNS module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK! Preferably, call it once per loop().
-  ethernetBonjour.run();
+  mdns.run();
 
   // The code below is just taken from the "WebServer" example in the Ethernet
   // library. The only difference here is that this web server gets announced
-  // over Bonjour, but this happens in setup(). This just displays something
+  // over mDNS, but this happens in setup(). This just displays something
   // in the browser when you connect.
   EthernetClient client = server.available();
   if (client) {
@@ -98,7 +98,7 @@ void loop()
           client.println("Content-Type: text/html");
           client.println();
           
-          client.println("Hello from a Bonjour-enabled web-server running ");
+          client.println("Hello from a mDNS-enabled web-server running ");
           client.println("on your Arduino board!");
 
           break;

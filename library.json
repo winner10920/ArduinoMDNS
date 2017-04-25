@@ -1,13 +1,13 @@
 {
-  "name": "EthernetBonjour",
+  "name": "ArduinoMDNS",
   "keywords": "mdns, bonjour",
-  "description": "Bonjour Library for Arduino & Teensyduino",
+  "description": "MDNS Library for Arduino",
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/TrippyLighting/EthernetBonjour.git"
+    "url": "https://github.com/arduino-libraries/ArduinoMDNS.git"
   },
-  "version": "1.0.0",
+  "version": "0.0.0",
   "frameworks": "arduino",
   "platforms": "*"
 }

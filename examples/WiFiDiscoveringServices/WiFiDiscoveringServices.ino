@@ -23,14 +23,14 @@
 #include <SPI.h>
 #include <WiFi101.h>
 #include <WiFiUdp.h>
-#include <EthernetBonjour.h>
+#include <ArduinoMDNS.h>
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 WiFiUDP udp;
-EthernetBonjour ethernetBonjour(udp);
+MDNS mdns(udp);
 
 const char* ip_to_str(const uint8_t*);
 void serviceFound(const char* type, MDNSServiceProtocol proto,
@@ -65,18 +65,18 @@ void setup()
 
   Serial.print("You're connected to the network");
   
-  // Initialize the Bonjour/MDNS library. You can now reach or ping this
+  // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as MacOS X).
   // Always call this before any other method!
-  ethernetBonjour.begin(WiFi.localIP(), "arduino");
+  mdns.begin(WiFi.localIP(), "arduino");
 
-  // We specify the function that the Bonjour library will call when it
+  // We specify the function that the mDNS library will call when it
   // discovers a service instance. In this case, we will call the function
   // named "serviceFound".
-  ethernetBonjour.setServiceFoundCallback(serviceFound);
+  mdns.setServiceFoundCallback(serviceFound);
 
-  Serial.println("Enter a Bonjour service name via the Arduino Serial Monitor "
+  Serial.println("Enter a mDNS service name via the Arduino Serial Monitor "
                  "to discover instances");
   Serial.println("on the network.");
   Serial.println("Examples are \"_http\", \"_afpovertcp\" or \"_ssh\" (Note "
@@ -97,9 +97,9 @@ void loop()
   serviceName[length] = '\0';
   
   // You can use the "isDiscoveringService()" function to find out whether the
-  // Bonjour library is currently discovering service instances.
+  // mDNS library is currently discovering service instances.
   // If so, we skip this input, since we want our previous request to continue.
-  if (!ethernetBonjour.isDiscoveringService()) {
+  if (!mdns.isDiscoveringService()) {
     if (length > 0) {    
       byte ipAddr[4];
 
@@ -107,7 +107,7 @@ void loop()
       Serial.print(serviceName);
       Serial.println("' via Multi-Cast DNS (Bonjour)...");
 
-      // Now we tell the Bonjour library to discover the service. Below, I have
+      // Now we tell the mDNS library to discover the service. Below, I have
       // hardcoded the TCP protocol, but you can also specify to discover UDP
       // services.
       // The last argument is a duration (in milliseconds) for which we will
@@ -116,19 +116,19 @@ void loop()
       // seconds, so if you search for longer than that, you will receive
       // duplicate instances.
 
-      ethernetBonjour.startDiscoveringService(serviceName,
-                                              MDNSServiceTCP,
-                                              5000);
+      mdns.startDiscoveringService(serviceName,
+                                   MDNSServiceTCP,
+                                   5000);
     }  
   }
 
-  // This actually runs the Bonjour module. YOU HAVE TO CALL THIS PERIODICALLY,
+  // This actually runs the mDNS module. YOU HAVE TO CALL THIS PERIODICALLY,
   // OR NOTHING WILL WORK!
   // Preferably, call it once per loop().
-  ethernetBonjour.run();
+  mdns.run();
 }
 
-// This function is called when a name is resolved via MDNS/Bonjour. We set
+// This function is called when a name is resolved via mMDNS/Bonjour. We set
 // this up in the setup() function above. The name you give to this callback
 // function does not matter at all, but it must take exactly these arguments
 // as below.

@@ -1,18 +1,19 @@
 #######################################
-# Syntax Coloring Map For HP RGB Shield V2.5
+# Syntax Coloring Map For ArduinoMDNS
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-EthernetBonjour			KEYWORD1
+ArduinoMDNS			KEYWORD1
+MDNS			KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 begin					KEYWORD2
-setBonjourName			KEYWORD2
+setName			KEYWORD2
 addServiceRecord		KEYWORD2
 run						KEYWORD2
 removeServiceRecord 	KEYWORD2

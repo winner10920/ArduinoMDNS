@@ -1,15 +1,13 @@
-EthernetBonjour
-===============
+# ArduinoMDNS
 
-Bonjour (ZeroConf) Library for Arduino & Teensyduino
+mDNS library for Arduino. Based on [@TrippyLighting](https://github.com/TrippyLighting)'s [EthernetBonjour](https://github.com/TrippyLighting/EthernetBonjour) library.
 
-mDNS (registering services) and DNS-SD (service discovery) has been tested and works on:
-Teensy++2 with WIZ81MJ and
-Teensy3 with WIZ820io
+Supports mDNS (registering services) and DNS-SD (service discovery).
 
-Using Arduino 1.0.5 and Teensyduino 1.18
+## Requirements
 
-The newest revised code replaces all direct hardware calls to the W5100 chip with calls to EthernetUDP methods.
-This will provide much better adaptability to different Ethernet hardware. 
+Any Arduino core and networking library that supports the new `virtual` `UDP::beginMulticast(...)` method, including:
 
-22-Dec-2015 Updated to provide compatibility with Arduino 1.6.6. Since 1.6.6. the Ethernet library provides support for multicast a pre-requisite for Bonjour to work.
+ * AVR core 1.6.18 or later (bundled with IDE 1.8.2 and later) for AVR boards
+ * SAMD core 1.6.13 or later for SAMD boards
+ * Arduino Ethernet and WiFi101 libraries
