@@ -35,9 +35,8 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 //       Ethernet shield.
 //       byte ip[] = { 192, 168, 0, 154 };
 
-const char* ip_to_str(const uint8_t*);
 void serviceFound(const char* type, MDNSServiceProtocol proto,
-                  const char* name, const byte ipAddr[4], unsigned short port,
+                  const char* name, IPAddress ip, unsigned short port,
                   const char* txtContent);
 
 void setup()
@@ -120,7 +119,7 @@ void loop()
 // If your specified discovery timeout is reached, the function will be called
 // with name (and all successive arguments) being set to NULL.
 void serviceFound(const char* type, MDNSServiceProtocol proto,
-                  const char* name, const byte ipAddr[4],
+                  const char* name, IPAddress ip,
                   unsigned short port,
                   const char* txtContent)
 {
@@ -131,7 +130,7 @@ void serviceFound(const char* type, MDNSServiceProtocol proto,
     Serial.print("Found: '");
     Serial.print(name);
     Serial.print("' at ");
-    Serial.print(ip_to_str(ipAddr));
+    Serial.print(ip);
     Serial.print(", port ");
     Serial.print(port);
     Serial.println(" (TCP)");
@@ -162,10 +161,3 @@ void serviceFound(const char* type, MDNSServiceProtocol proto,
   }
 }
 
-// This is just a little utility function to format an IP address as a string.
-const char* ip_to_str(const uint8_t* ipAddr)
-{
-  static char buf[16];
-  sprintf(buf, "%d.%d.%d.%d\0", ipAddr[0], ipAddr[1], ipAddr[2], ipAddr[3]);
-  return buf;
-}

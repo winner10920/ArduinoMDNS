@@ -36,8 +36,7 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 //       Ethernet shield.
 //       byte ip[] = { 192, 168, 0, 154 };
 
-const char* ip_to_str(const uint8_t*);
-void nameFound(const char* name, const byte ipAddr[4]);
+void nameFound(const char* name, IPAddress ip);
 
 void setup()
 {
@@ -108,13 +107,13 @@ void loop()
 // (a const char*, which is the hostName you wanted resolved, and a const
 // byte[4], which contains the IP address of the host on success, or NULL if
 // the name resolution timed out).
-void nameFound(const char* name, const byte ipAddr[4])
+void nameFound(const char* name, IPAddress ip)
 {
-  if (NULL != ipAddr) {
+  if (ip != INADDR_NONE) {
     Serial.print("The IP address for '");
     Serial.print(name);
     Serial.print("' is ");
-    Serial.println(ip_to_str(ipAddr));
+    Serial.println(ip);
   } else {
     Serial.print("Resolving '");
     Serial.print(name);
@@ -122,10 +121,3 @@ void nameFound(const char* name, const byte ipAddr[4])
   }
 }
 
-// This is just a little utility function to format an IP address as a string.
-const char* ip_to_str(const uint8_t* ipAddr)
-{
-  static char buf[16];
-  sprintf(buf, "%d.%d.%d.%d\0", ipAddr[0], ipAddr[1], ipAddr[2], ipAddr[3]);
-  return buf;
-}

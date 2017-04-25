@@ -67,9 +67,9 @@ typedef struct _MDNSServiceRecord_t {
    uint8_t*                textContent;
 } MDNSServiceRecord_t;
 
-typedef void (*MDNSNameFoundCallback)(const char*, const byte[4]);
+typedef void (*MDNSNameFoundCallback)(const char*, IPAddress);
 typedef void (*MDNSServiceFoundCallback)(const char*, MDNSServiceProtocol_t, const char*,
-                                         const byte[4], unsigned short, const char*);
+                                         IPAddress, unsigned short, const char*);
 
 #define  NumMDNSServiceRecords   (8)
 

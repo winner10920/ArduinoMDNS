@@ -997,7 +997,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                      this->_serviceFoundCallback(typeName,
                                                 this->_resolveServiceProto,
                                                 (const char*)ptrNames[i],
-                                                (const byte*)ipAddr,
+                                                IPAddress((const byte*)ipAddr),
                                                 (unsigned short)ptrPorts[i],
                                                 (const char*)servTxt[i]);
                   }
@@ -1080,7 +1080,7 @@ void MDNS::run()
                   this->_serviceFoundCallback(typeName,
                                               this->_resolveServiceProto,
                                               NULL,
-                                              NULL,
+                                              IPAddress(),
                                               0,
                                               NULL);
                }
@@ -1426,7 +1426,7 @@ void MDNS::_finishedResolvingName(char* name, const byte ipAddr[4])
          *(n-1) = '\0';
       }
    
-      this->_nameFoundCallback((const char*)name, ipAddr);
+      this->_nameFoundCallback((const char*)name, IPAddress(ipAddr));
    }
 
    my_free(this->_resolveNames[0]);
