@@ -509,7 +509,7 @@ MDNSError_t MDNS::_processMDNSQuery()
    DNSHeader_t dnsHeaderBuf;
    DNSHeader_t* dnsHeader = &dnsHeaderBuf;
 #endif
-   int i, j;
+   unsigned int i, j;
    uint8_t* buf;
    uint32_t xid = 0;
    uint16_t udp_len, qCnt, aCnt, aaCnt, addCnt;
@@ -704,7 +704,7 @@ MDNSError_t MDNS::_processMDNSQuery()
          
          servNamePos[0] = servNamePos[1] = 0;
                   
-         for (i=0; i<qCnt+aCnt+aaCnt+addCnt; i++) {
+         for (i=0; i<(unsigned int)(qCnt+aCnt+aaCnt+addCnt); i++) {
 
             for (j=0; j<2; j++) {
                if (NULL != this->_resolveNames[j]) {
@@ -874,7 +874,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                         }
                      }
                   }
-               } else if (i >= qCnt+aCnt+aaCnt) {
+               } else if (i >= (unsigned int)(qCnt+aCnt+aaCnt)) {
                   //  check whether we find a service description
                   if (buf[1] == 0x21) {
                      for (j=0; j<MDNS_MAX_SERVICES_PER_PACKET; j++) {
