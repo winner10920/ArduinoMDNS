@@ -118,7 +118,7 @@ void loop()
   char isPage2 = 0;
   if (client) {
     // an http request ends with a blank line
-    boolean current_line_is_blank = true;
+    bool current_line_is_blank = true;
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
