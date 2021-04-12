@@ -48,7 +48,7 @@ void setup()
   
   // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is mDNS/Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as macOS).
   // Always call this before any other method!
   mdns.begin(Ethernet.localIP(), "arduino");
 
@@ -70,7 +70,7 @@ void loop()
   char serviceName[256];
   int length = 0;
   
-  // read in a service name from the Arduino IDE's serial monitor.
+  // read in a service name from the Arduino IDE's Serial Monitor.
   while (Serial.available()) {
     serviceName[length] = Serial.read();
     length = (length+1) % 256;
@@ -108,7 +108,7 @@ void loop()
   mdns.run();
 }
 
-// This function is called when a name is resolved via MDNS/Bonjour. We set
+// This function is called when a name is resolved via mDNS/Bonjour. We set
 // this up in the setup() function above. The name you give to this callback
 // function does not matter at all, but it must take exactly these arguments
 // as below.
@@ -159,4 +159,3 @@ void serviceFound(const char* type, MDNSServiceProtocol /*proto*/,
     }
   }
 }
-

@@ -402,7 +402,7 @@ MDNSError_t MDNS::_sendMDNSMessage(uint32_t /*peerAddress*/, uint32_t xid, int t
             ptr += slen;
          }
          
-         // PTR record (for the dns-sd service in general)
+         // PTR record (for the DNS-SD service in general)
          this->_writeDNSName((const uint8_t*)DNS_SD_SERVICE, &ptr, buf,
                                           sizeof(DNSHeader_t), 1);
          
@@ -783,9 +783,9 @@ MDNSError_t MDNS::_processMDNSQuery()
                         for (j=0; j<MDNS_MAX_SERVICES_PER_PACKET; j++) {
                            if (NULL != ptrNames[j] && ptrNamesMatches[j]) {
                               // only compare the part we have. this is incorrect, but good enough,
-                              // since actual MDNS implementations won't go here anyways, as they
+                              // since actual mDNS implementations won't go here anyways, as they
                               // should use name compression. This is just so that multiple Arduinos
-                              // running this MDNSResponder code should be able to find each other's
+                              // running this mDNSResponder code should be able to find each other's
                               // services.
                               if (ptrLensCmp[j] >= ir) 
                                  ptrNamesMatches[j] &= this->_matchStringPart(&ptrNamesCmp[j],
@@ -800,7 +800,7 @@ MDNSError_t MDNS::_processMDNSQuery()
             } while (rLen > 0 && rLen <= 128);
                         
             // if this matched a name of ours (and there are no characters left), then
-            // check wether this is an A record query (for our own name) or a PTR record query
+            // check whether this is an A record query (for our own name) or a PTR record query
             // (for one of our services).
             // if so, we'll note to send a record
             if (i < qCnt)
@@ -982,7 +982,7 @@ MDNSError_t MDNS::_processMDNSQuery()
                   for (j=0; j<MDNS_MAX_SERVICES_PER_PACKET; j++) {
                      if (servIPs[j][0] == ptrIPs[i] || servIPs[j][0] == 255) {
                         // the || part is such a hack, but it will work as long as there's only
-                        // one A record per MDNS packet. fucking DNS name compression.                     
+                        // one A record per mDNS packet. fucking DNS name compression.                     
                         ipAddr = &servIPs[j][1];
                         
                         break;
@@ -1051,7 +1051,7 @@ void MDNS::run()
    uint8_t i;
    unsigned long now = millis();
    
-   // first, look for MDNS queries to handle
+   // first, look for mDNS queries to handle
    (void)_processMDNSQuery();
    
    // are we querying a name or service? if so, should we resend the packet or time out?
