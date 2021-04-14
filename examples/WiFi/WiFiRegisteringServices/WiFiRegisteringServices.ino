@@ -27,7 +27,7 @@
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
+int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
 WiFiUDP udp;
 MDNS mdns(udp);
@@ -48,7 +48,7 @@ void setup()
     while (true);
   }
 
-  // attempt to connect to Wifi network:
+  // attempt to connect to WiFi network:
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to WPA SSID: ");
     Serial.println(ssid);
@@ -65,7 +65,7 @@ void setup()
 
   // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is mDNS/Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as macOS).
   // Always call this before any other method!
   mdns.begin(WiFi.localIP(), "arduino");
 
@@ -73,7 +73,7 @@ void setup()
   // To do so, we call the addServiceRecord() method. The first argument is the
   // name of our service instance and its type, separated by a dot. In this
   // case, the service type is _http. There are many other service types, use
-  // google to look up some common ones, but you can also invent your own
+  // Google to look up some common ones, but you can also invent your own
   // service type, like _mycoolservice - As long as your clients know what to
   // look for, you're good to go.
   // The second argument is the port on which the service is running. This is
@@ -101,16 +101,16 @@ void loop()
   // in the browser when you connect.
   WiFiClient client = server.available();
   if (client) {
-    // an http request ends with a blank line
+    // an HTTP request ends with a blank line
     bool current_line_is_blank = true;
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
         // if we've gotten to the end of the line (received a newline
-        // character) and the line is blank, the http request has ended,
+        // character) and the line is blank, the HTTP request has ended,
         // so we can send a reply
         if (c == '\n' && current_line_is_blank) {
-          // send a standard http response header
+          // send a standard HTTP response header
           client.println("HTTP/1.1 200 OK");
           client.println("Content-Type: text/html");
           client.println();

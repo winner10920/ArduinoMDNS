@@ -18,7 +18,7 @@
 //  <http://www.gnu.org/licenses/>.
 //
 
-//  Illustrates how to resolve host names via MDNS (Multicast DNS)
+//  Illustrates how to resolve host names via mDNS (Multicast DNS)
 
 
 #include <SPI.h>
@@ -47,7 +47,7 @@ void setup()
   
   // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is mDNS/Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as macOS).
   // Always call this before any other method!
   mdns.begin(Ethernet.localIP(), "arduino");
 
@@ -67,7 +67,7 @@ void loop()
   char hostName[512];
   int length = 0;
   
-  // read in a host name from the Arduino IDE's serial monitor.
+  // read in a host name from the Arduino IDE's Serial Monitor.
   while (Serial.available()) {
     hostName[length] = Serial.read();
     length = (length+1) % 512;
@@ -118,4 +118,3 @@ void nameFound(const char* name, IPAddress ip)
     Serial.println("' timed out.");
   }
 }
-
