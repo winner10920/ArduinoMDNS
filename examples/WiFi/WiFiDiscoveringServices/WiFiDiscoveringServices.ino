@@ -27,7 +27,7 @@
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
+int status = WL_IDLE_STATUS;     // the WiFi radio's status
 
 WiFiUDP udp;
 MDNS mdns(udp);
@@ -51,7 +51,7 @@ void setup()
     while (true);
   }
 
-  // attempt to connect to Wifi network:
+  // attempt to connect to WiFi network:
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to WPA SSID: ");
     Serial.println(ssid);
@@ -66,7 +66,7 @@ void setup()
   
   // Initialize the mDNS library. You can now reach or ping this
   // Arduino via the host name "arduino.local", provided that your operating
-  // system is mDNS/Bonjour-enabled (such as MacOS X).
+  // system is mDNS/Bonjour-enabled (such as macOS).
   // Always call this before any other method!
   mdns.begin(WiFi.localIP(), "arduino");
 
@@ -87,7 +87,7 @@ void loop()
   char serviceName[256];
   int length = 0;
   
-  // read in a service name from the Arduino IDE's serial monitor.
+  // read in a service name from the Arduino IDE's Serial Monitor.
   while (Serial.available()) {
     serviceName[length] = Serial.read();
     length = (length+1) % 256;
@@ -176,4 +176,3 @@ void serviceFound(const char* type, MDNSServiceProtocol /*proto*/,
     }
   }
 }
-
